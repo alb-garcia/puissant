@@ -22,6 +22,16 @@ test:
 build:
 	python -m build
 
+upload:
+	twine upload dist/*
+
+
+push:
+	git add .
+	git status
+	git commit -m "$(COMMENT)"
+	git push
+
 clean:
 	rm -rf *~
 	rm -rf ./dist
