@@ -6,9 +6,6 @@
 		  :alt: Documentation Status
 
 .. |pic1|  image:: https://raw.githubusercontent.com/alb-garcia/nix_shell_utils/main/docs/img/python.svg?
-			
-		  
-
 
 
 puissant

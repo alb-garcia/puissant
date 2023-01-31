@@ -119,7 +119,7 @@ import os
 import re
 
 semver_re: re.Pattern = re.compile(r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
-"Semantic Versioning regular expression as recommended in `<semver.org>`_"
+"Semantic Versioning regular expression as recommended in `semver.org <https://semver.org/>`_"
 
 T = TypeVar("T")
 R = TypeVar("R")
