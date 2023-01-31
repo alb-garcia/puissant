@@ -1,11 +1,12 @@
-|pic1|
+|pic1| |pic2| |pic3|
 
-|pic2|
-
-.. |pic1| image:: https://github.com/alb-garcia/nix_shell_utils/actions/workflows/test.yml/badge.svg?
-.. |pic2| image:: https://readthedocs.org/projects/puissant/badge/?version=latest
+.. |pic2| image:: https://github.com/alb-garcia/nix_shell_utils/actions/workflows/test.yml/badge.svg?
+.. |pic3| image:: https://readthedocs.org/projects/puissant/badge/?version=latest
 		  :target: https://puissant.readthedocs.io/en/latest/?badge=latest
 		  :alt: Documentation Status
+
+.. |pic1|  image:: https://raw.githubusercontent.com/alb-garcia/nix_shell_utils/main/docs/img/python.svg?
+			
 		  
 
 
