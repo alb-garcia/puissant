@@ -25,6 +25,16 @@ Examples
     Do you want to continue [y/n]?(default:n) <= Enter
     False
 
+- semantic versioning input::
+
+    >>> semantic_version('Enter next version: ')
+    Enter next version: a1.3.2
+    Not conformat to Semantic Versioning 2.0.0-rc.2 spec.
+    Enter next version: 1.3.2-alpha+001
+    (1, 3, 2, 'alpha', '001')
+    >>> 
+
+
 - menu input::
 
     >>> menu(prompt = 'what next?', options = ['restart', 'continue', 'quit'])
@@ -106,6 +116,10 @@ from __future__ import annotations
 
 from typing import Tuple, TypeVar, Sequence, Callable, List, Type, Any
 import os
+import re
+
+semver_re: re.Pattern = re.compile(r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
+"Semantic Versioning regular expression as recommended in `<semver.org>`_"
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -326,7 +340,7 @@ def ranged_int(
         The integer user input, if it is deemed valid.
 
     Raises:
-        ValueError, after ``retries + 1`` invalid user input attemtpts.
+        ValueError: after ``retries + 1`` invalid user input attemtpts.
     """
 
     return vinput(
@@ -358,13 +372,13 @@ def ranged_float(
         low: minimum allowed floating point input.
         high: maximum allowed floating point input.
         default: default result if user only presses Return.
-        retries: allowed number of attempts for user input.
+        retries: allowed number of extra attempts for user input.
 
     Returns:
         The floating point user input, if it is deemed valid.
 
     Raises:
-        ValueError, after ``retries + 1`` invalid user input attemtpts.
+        ValueError: after ``retries + 1`` invalid user input attemtpts.
     """
 
     return vinput(
@@ -375,7 +389,52 @@ def ranged_float(
         nrange=(low, high),
     )
 
+def _semver_preproc(svin: str) -> re.MAtch:
+    " pre-processing for validated semantic version input - matches input string with semver.org recommended regexp."
+    return semver_re.match(svin)
 
+def _semver_validation(m: re.Match) -> bool:
+    " validation function for validated semantic version input: OK if semver.org regexp matched input string."
+    return m != None
+
+def _semver_postproc(m: re.Match) -> Tuple[int, int, int, str | None, str | None]:
+    """post-processing for validated semantic version input - takes semver.org regexp match and returns a tuple:
+    (major, minor, patch, release, build)
+    """
+
+    sv = m.groups()
+    return (int(sv[0]), int(sv[1]), int(sv[2]), sv[3], sv[4])
+
+def semantic_version(prompt: str, retries=-1) -> Tuple[int, int, int, str | None, str | None]:
+    """ gets Semantic Version 2.0.0-rc.2 validated input.
+
+    Example::
+
+      >>> semantic_version('Enter next version: ')
+      Enter next version: a1.3.2
+      Not conformat to Semantic Versioning 2.0.0-rc.2 spec.
+      Enter next version: 1.3.2-alpha+001
+      (1, 3, 2, 'alpha', '001')
+      >>> 
+
+    Arguments:
+        prompt: user input prompt
+        retries: allowed number of extra attempts for user input
+
+    Returns:
+        A tuple ``(major, minor, patch, release, build)`` with version data.
+
+    Raises:
+        ValueError: after ``retries + 1`` invalid user input attemtpts.
+    """
+    
+    return vinput(prompt = prompt,
+                  typ = str,
+                  pre_fn = _semver_preproc,
+                  validation_fn = _semver_validation,
+                  post_fn = _semver_postproc,
+                  type_err_msg = "Not conformat to Semantic Versioning 2.0.0-rc.2 spec.")
+    
 def vinput(
     prompt: str,
     typ: Type[T],
@@ -462,7 +521,7 @@ def vinput(
         ``post_fn(pre_fn(user_input))`` if input is deemed valid.
 
     Raises:
-        ValueError after ``retries + 1`` invalid user input attempts.
+        ValueError: after ``retries + 1`` invalid user input attempts.
     """
 
     if nrange != None and enum != None:
@@ -519,6 +578,11 @@ def vinput(
 
         good = validation_fn(kin)
         if not good:
+            if type_err_msg == None:
+                print(f"Validation failed for {rin}.")
+            else:
+                print(type_err_msg)
+
             continue
 
         # if nothing went wrong, the value is accepted

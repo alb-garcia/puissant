@@ -51,6 +51,16 @@ Examples
   >>> yes_no(prompt = "Are you happy", default = 'y')
   Are you happy [y/n]?(default:y) True
 
+* semantic versioning input
+
+.. code-block:: python    
+
+  >>> semantic_version('Enter next version: ')
+  Enter next version: a1.3.2
+  Not conformant to Semantic Versioning 2.0.0 spec.
+  Enter next version: 1.3.2-alpha+001
+  (1, 3, 2, 'alpha', '001')
+  >>> 
 
 * Single option menu:
 
