@@ -118,8 +118,9 @@ from typing import Tuple, TypeVar, Sequence, Callable, List, Type, Any
 import os
 import re
 
-semver_re: re.Pattern = re.compile(r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
-"Semantic Versioning regular expression as recommended in `semver.org <https://semver.org/>`_"
+# Semantic Versioning regular expression as recommended in https://semver.org
+_semver_re: re.Pattern = re.compile(r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
+
 
 T = TypeVar("T")
 R = TypeVar("R")
@@ -391,7 +392,7 @@ def ranged_float(
 
 def _semver_preproc(svin: str) -> re.MAtch:
     " pre-processing for validated semantic version input - matches input string with semver.org recommended regexp."
-    return semver_re.match(svin)
+    return _semver_re.match(svin)
 
 def _semver_validation(m: re.Match) -> bool:
     " validation function for validated semantic version input: OK if semver.org regexp matched input string."
